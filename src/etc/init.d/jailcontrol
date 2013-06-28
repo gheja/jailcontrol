@@ -1,0 +1,108 @@
+#!/bin/sh
+
+# <jailcontrol@dev.kakaopor.hu> 2009-2010
+
+version="0.1.1"
+
+_echo()
+{
+	echo -e "$prog: $@" >&2
+}
+
+_echo_short()
+{
+	echo -e "$@" >&2
+}
+
+# default config
+base_directory="/jails"
+jails=""
+color_enabled=1
+color_error='\033[1;31m'
+color_highlight='\033[1;34m'
+color_default='\033[0m'
+
+# include config
+[ -f "/etc/jailcontrol.conf" ] && . /etc/jailcontrol.conf
+
+prog=`basename $0`
+
+if [ "$color_enabled" != 1 ]; then
+	color_error=''
+	color_highlight=''
+	color_defaults=''
+fi
+
+if [ `whoami` != "root" ]; then
+	_echo "${color_error}Must be run as root.${color_default}"
+	exit 1
+fi
+
+# parse parameters
+operation="$1"
+
+runlevel=`runlevel | awk '{ print $2; }'`
+
+if [ "$2" != "" ]; then
+	shift
+	jails="$@"
+fi
+
+# check if operation is empty
+if [ "$operation" == "" ]; then
+	_echo "${color_error}Operation \"$operation\" not supported.${color_default}"
+	exit 2
+fi
+
+if [ $? != 0 ]; then
+	_echo "${color_error}No jails defined!${color_default}"
+	exit 3
+fi
+
+# check if operation is "stop", if so reverse the order of jails
+if [ "$operation" == "stop" ]; then
+	# == tac?
+	jails_tmp=""
+	for i in $jails; do
+		jails_tmp="$i $jails_tmp"
+	done
+	jails="$jails_tmp"
+fi
+
+# go through the jail list and start/stop/... needed services
+for i in $jails; do
+	dir="$base_directory/$i"
+	
+	# show which jail are we handling
+	_echo_short "${color_highlight}Jailcontrol: $i ($operation)${color_default}"
+
+	# chceck wether the jail directory exists
+	if [ ! -d "$dir" ]; then
+		# show an error message
+		_echo_short "${color_error}  * \"$dir\" not found!${color_default}"
+		_echo_short ""
+		continue
+	fi
+	
+	# go to that directory
+	cd "$dir"
+	if [ $? != 0 ]; then
+		_echo_short "${color_error}  * Cannot enter \"$dir\"!${color_default}"
+		_echo_short ""
+		continue
+	fi
+	
+	if [ "$operation" == "list" ]; then
+		for j in etc/rc$runlevel.d/S*; do
+			_echo_short "  /$j"
+		done
+	else
+		for j in etc/rc$runlevel.d/S*; do
+			chroot . "/$j" $operation
+		done
+	fi
+	
+	_echo_short ""
+done
+
+exit 0

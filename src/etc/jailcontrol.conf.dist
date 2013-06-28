@@ -1,0 +1,34 @@
+## /etc/jailcontrol.conf
+## This is a shell script so the syntax is the same.
+
+##
+## base_directory: This is the base directory of jails. All the jails will be
+## searched inside this directory. Of course you can define / as base_directory,
+## and use absolute directory names in jails parameter.
+##
+## Example:
+##   base_directory="/var/myjails"
+##
+## Default value (if not definied this value will be used): "/jails"
+##
+base_directory="/jails"
+
+##
+## jails: List your jails here, separating them by spaces or new lines.
+##
+## Example:
+##   jails="apache postfix mysql"
+##
+## Default value (if not definied this value will be used): "" (empty string)
+##
+jails=""
+
+##
+## colors_enabled: Enable or disable colors. Valid values: 1 or 0
+##
+## Example:
+##   colors_enabled=0
+##
+## Default value (if not definied this value will be used): 1
+##
+colors_enabled=1

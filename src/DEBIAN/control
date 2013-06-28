@@ -1,0 +1,12 @@
+Package: jailcontrol
+Version: __VERSION__
+Section: net
+Priority: optional
+Architecture: all
+Depends: bash
+Conflicts: wl-jailinit
+Maintainer: Gabor Heja <jailcontrol@dev.kakaopor.hu>
+Description: 
+ Start/stop your jails with a single command.
+ 
+ https://github.com/gheja/jailcontrol
