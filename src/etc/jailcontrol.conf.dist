@@ -34,9 +34,9 @@ jails=""
 colors_enabled=1
 
 ##
-## jail_tagging: Enable or disable jail tagging. When enabled, a
+## jail_tagging_enabled: Enable or disable jail tagging. When enabled, an
 ## "/etc/jailcontrol_jail_name" file will be created inside the jails when
-## starting/restarting the jail. Valid values: 1 or 0
+## starting them. Valid values: 1 or 0
 ##
 ## *** WARNING ***
 ## This might be considered as a security information leaking as the file can
@@ -44,25 +44,28 @@ colors_enabled=1
 ## are running in.
 ##
 ## Example:
-##   jail_tagging=1
+##   jail_tagging_enabled=1
 ##
 ## Default value (if not definied this value will be used): 0
 ##
-jail_tagging=0
+jail_tagging_enabled=0
 
 ##
-## jail_tagging_mode: The mode of file created by "jail_tagging" parameter.
+## jail_tagging_mode: The mode of file created by "jail_tagging_enabled"
+## parameter.
 ##
-## For more info see "jail_tagging".
+## For more info see "jail_tagging_enabled".
 ##
 jail_tagging_mode=0700
 
 ##
-## jail_tagging_uid_gid: The UID and GIT of file created by "jail_tagging"
-## parameter. The UID and GID are set from the root system, therefore the
-## users and groups must exist _outside_ the jail. (Using numbers not names
-## will work anyways and is a preferred method. 0:0 is root:root)
+## jail_tagging_uid_gid: The UID and GIT of file created by the 
+## "jail_tagging_enabled" parameter. The UID and GID are set from the root
+## system, therefore the users and groups must exist _outside_ the jail.
 ##
-## For more info see "jail_tagging".
+## Using numbers instead of names will work anyways and is a preferred method.
+## 0:0 is root:root
+##
+## For more info see "jail_tagging_enabled".
 ##
 jail_tagging_uid_gid=0:0
