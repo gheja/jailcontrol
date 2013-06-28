@@ -14,6 +14,12 @@ echo $debian_version > .build_deb_version
 
 cd ./build_deb
 
+chown 0:0 ./etc/init.d/jailcontrol
+chmod 700 ./etc/init.d/jailcontrol
+
+chown 0:0 ./etc/jailcontrol.conf.dist
+chmod 600 ./etc/jailcontrol.conf.dist
+
 version=`cat ./etc/init.d/jailcontrol | grep -Eo '^version=.*' | cut -d \" -f 2`
 version="${version}-${debian_version}"
 
