@@ -1,3 +1,8 @@
+2013-06-28 v0.2.1
+    * Fixed wrong handling of rules in fstab and network/interfaces
+    * Added notice if no rules exist in fstab and/or network/interfaces
+    * Added "Error: " prefixes to error messages
+
 2012-xx-xx v0.2
     * Added support of /etc/fstab rules for jails
     * Added support of /etc/networking/interfaces rules for jails
