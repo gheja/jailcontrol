@@ -31,6 +31,7 @@ get_begin_end_tags_from_file()
 	end_line_number=`cat $file | grep -En "^### jailcontrol end: $jail\$" | head -n 1 | cut -d : -f 1`
 	
 	if [ "$begin_line_number" == "" ] && [ "$end_line_number" == "" ]; then
+		_echo_short "${color_default}  * No rules found in $file.${color_default}${color_default}"
 		return 1
 	fi
 	
