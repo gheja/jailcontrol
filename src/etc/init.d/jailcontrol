@@ -36,12 +36,12 @@ get_begin_end_tags_from_file()
 	fi
 	
 	if [ "$begin_line_number" != "" ] && [ "$end_line_number" == "" ]; then
-		_echo_short "${color_error}  * Could not find \"begin\" and \"end\" tags in $file.${color_default}"
+		_echo_short "${color_error}  * Error: could not find \"begin\" or \"end\" tags in $file.${color_default}"
 		return 1
 	fi
 	
 	if [ $begin_line_number -ge $end_line_number ]; then
-		_echo_short "${color_error}  * Invalid order of \"begin\" and \"end\" tags in $file.${color_default}"
+		_echo_short "${color_error}  * Error: invalid order of \"begin\" and \"end\" tags in $file.${color_default}"
 		return 1
 	fi
 }
@@ -144,7 +144,7 @@ if [ "$color_enabled" != 1 ]; then
 fi
 
 if [ `whoami` != "root" ]; then
-	_echo "${color_error}Must be run as root.${color_default}"
+	_echo "${color_error}Error: must be run as root.${color_default}"
 	exit 1
 fi
 
@@ -160,12 +160,12 @@ fi
 
 # check if operation is empty
 if [ "$operation" == "" ]; then
-	_echo "${color_error}Operation \"$operation\" not supported.${color_default}"
+	_echo "${color_error}Error: operation \"$operation\" not supported.${color_default}"
 	exit 2
 fi
 
 if [ $? != 0 ]; then
-	_echo "${color_error}No jails defined!${color_default}"
+	_echo "${color_error}Error: no jails defined!${color_default}"
 	exit 3
 fi
 
@@ -195,7 +195,7 @@ for i in $jails; do
 	# chceck wether the jail directory exists
 	if [ ! -d "$dir" ]; then
 		# show an error message
-		_echo_short "${color_error}  * \"$dir\" not found!${color_default}"
+		_echo_short "${color_error}  * Error: \"$dir\" not found!${color_default}"
 		_echo_short ""
 		continue
 	fi
@@ -203,7 +203,7 @@ for i in $jails; do
 	# go to that directory
 	cd "$dir"
 	if [ $? != 0 ]; then
-		_echo_short "${color_error}  * Cannot enter \"$dir\"!${color_default}"
+		_echo_short "${color_error}  * Error: cannot enter \"$dir\"!${color_default}"
 		_echo_short ""
 		continue
 	fi
