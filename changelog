@@ -1,6 +1,6 @@
 2013-xx-xx v0.2.2
     * Added jail_tagging
-    * Introduced config values
+    * Introduced config values:
       * jail_tagging_enabled=0
       * jail_tagging_mode=0600
       * jail_tagging_uid_gid=0:0
