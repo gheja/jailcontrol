@@ -1,3 +1,10 @@
+2013-xx-xx v0.2.2
+    * Added jail_tagging
+    * Introduced config values
+      * jail_tagging_enabled=0
+      * jail_tagging_mode=0600
+      * jail_tagging_uid_gid=0:0
+
 2013-06-28 v0.2.1
     * Fixed wrong handling of rules in fstab and network/interfaces
     * Added notice if no rules exist in fstab and/or network/interfaces
