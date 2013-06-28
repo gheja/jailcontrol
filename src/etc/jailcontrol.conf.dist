@@ -56,7 +56,7 @@ jail_tagging_enabled=0
 ##
 ## For more info see "jail_tagging_enabled".
 ##
-jail_tagging_mode=0700
+jail_tagging_mode=0600
 
 ##
 ## jail_tagging_uid_gid: The UID and GIT of file created by the 
