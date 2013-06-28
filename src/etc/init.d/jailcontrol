@@ -124,10 +124,26 @@ fstab_stop_for_jail()
 	done
 }
 
+do_jail_tagging()
+{
+	local jail="$1"
+	local dir="$2"
+	local file
+	
+	file="$dir/etc/jailcontrol_jail_name"
+	
+	echo "$jail" > $file
+	chown $jail_tagging_uid_gid $file
+	chmod $jail_tagging_mode $file
+}
+
 # default config
 base_directory="/jails"
 jails=""
 color_enabled=1
+jail_tagging_enabled=0
+jail_tagging_mode=0600
+jail_tagging_uid_gid=0:0
 color_error='\033[1;31m'
 color_highlight='\033[1;34m'
 color_default='\033[0m'
@@ -188,6 +204,9 @@ for i in $jails; do
 	
 	# on start...
 	if [ "$operation" == "start" ]; then
+		if [ "$jail_tagging_enabled" == "1" ]; then
+			do_jail_tagging $i "$dir"
+		fi
 		network_start_for_jail $i
 		fstab_start_for_jail $i
 	fi
