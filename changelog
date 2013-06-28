@@ -1,4 +1,4 @@
-2013-xx-xx v0.2.2
+2013-06-28 v0.2.2
     * Added jail_tagging
     * Introduced config values:
       * jail_tagging_enabled=0
