@@ -10,7 +10,7 @@
 # Short-Description: Starts/stops jails
 ### END INIT INFO
 
-version="0.2"
+version="0.2.1-testing"
 
 _echo()
 {
@@ -34,7 +34,7 @@ get_begin_end_tags_from_file()
 		return 1
 	fi
 	
-	if [ "$begin_line_number" != "" ] || [ "$end_line_number" != "" ]; then
+	if [ "$begin_line_number" != "" ] && [ "$end_line_number" == "" ]; then
 		_echo_short "${color_error}  * Could not find \"begin\" and \"end\" tags in $file.${color_default}"
 		return 1
 	fi
