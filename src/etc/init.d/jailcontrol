@@ -10,7 +10,7 @@
 # Short-Description: Starts/stops jails
 ### END INIT INFO
 
-version="0.2.2"
+version="0.2.3-testing"
 
 _echo()
 {
@@ -131,6 +131,8 @@ do_jail_tagging()
 	local file
 	
 	file="$dir/etc/jailcontrol_jail_name"
+	
+	_echo_short "${color_default}  * Jail tagging: ${file}${color_default}"
 	
 	echo "$jail" > $file
 	chown $jail_tagging_uid_gid $file
