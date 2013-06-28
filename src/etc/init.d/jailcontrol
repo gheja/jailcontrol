@@ -1,8 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          jailcontrol
+# Required-Start:    $all
+# Required-Stop:     
+# X-Start-Before:    
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     false
+# Short-Description: Starts/stops jails
+### END INIT INFO
 
-# <jailcontrol@dev.kakaopor.hu> 2009-2010
-
-version="0.1.1"
+version="0.2"
 
 _echo()
 {
@@ -12,6 +20,107 @@ _echo()
 _echo_short()
 {
 	echo -e "$@" >&2
+}
+
+get_begin_end_tags_from_file()
+{
+	local file=$1
+	local jail=$2
+	
+	begin_line_number=`cat $file | grep -En "^### jailcontrol begin: $jail\$" | head -n 1 | cut -d : -f 1`
+	end_line_number=`cat $file | grep -En "^### jailcontrol end: $jail\$" | head -n 1 | cut -d : -f 1`
+	
+	if [ "$begin_line_number" == "" ] && [ "$end_line_number" == "" ]; then
+		return 1
+	fi
+	
+	if [ "$begin_line_number" != "" ] || [ "$end_line_number" != "" ]; then
+		_echo_short "${color_error}  * Could not find \"begin\" and \"end\" tags in $file.${color_default}"
+		return 1
+	fi
+	
+	if [ $begin_line_number -ge $end_line_number ]; then
+		_echo_short "${color_error}  * Invalid order of \"begin\" and \"end\" tags in $file.${color_default}"
+		return 1
+	fi
+}
+
+network_start_for_jail()
+{
+	local jail=$1
+	local line
+	
+	get_begin_end_tags_from_file /etc/network/interfaces $jail
+	if [ $? != 0 ]; then
+		return 1
+	fi
+	
+	cat /etc/network/interfaces | awk "NR>=$begin_line_number&&NR<=$end_line_number" | grep -E '^\s*iface ' | awk '{ print $2; }' | while read iface; do
+		command="ifup $iface"
+		_echo_short "  * Starting network interface: $command"
+		$command
+	done
+}
+
+network_stop_for_jail()
+{
+	local jail=$1
+	local line
+	
+	get_begin_end_tags_from_file /etc/network/interfaces $jail
+	if [ $? != 0 ]; then
+		return 1
+	fi
+	
+	cat /etc/network/interfaces | awk "NR>=$begin_line_number&&NR<=$end_line_number" | grep -E '^\s*iface ' | awk '{ print $2; }' | tac | while read iface; do
+		command="ifdown $iface"
+		_echo_short "  * Shutting down network interface: $command"
+		$command
+	done
+}
+
+fstab_start_for_jail()
+{
+	local jail=$1
+	local line
+	local mount_source
+	local mount_target
+	local mount_fstype
+	local mount_options
+	
+	get_begin_end_tags_from_file /etc/fstab $jail
+	if [ $? != 0 ]; then
+		return 1
+	fi
+	
+	cat /etc/fstab | awk "NR>=$begin_line_number&&NR<=$end_line_number" | grep -Ev '^\s*#|^\s*$' | while read line; do
+		mount_source=`echo $line | awk '{ print $1; }'`
+		mount_target=`echo $line | awk '{ print $2; }'`
+		mount_fstype=`echo $line | awk '{ print $3; }'`
+		mount_options=`echo $line | awk '{ print $4; }'`
+		command="mount -t $mount_fstype -o $mount_options $mount_source $mount_target"
+		_echo_short "  * Mounting filesystem: $command"
+		$command
+	done
+}
+
+fstab_stop_for_jail()
+{
+	local jail=$1
+	local line
+	local mount_target
+	
+	get_begin_end_tags_from_file /etc/fstab $jail
+	if [ $? != 0 ]; then
+		return 1
+	fi
+	
+	cat /etc/fstab | awk "NR>=$begin_line_number&&NR<=$end_line_number" | grep -Ev '^\s*#|^\s*$' | tac | while read line; do
+		mount_target=`echo $line | awk '{ print $2; }'`
+		command="umount $mount_target"
+		_echo_short "  * Unmounting filesystem: $command"
+		$command
+	done
 }
 
 # default config
@@ -75,6 +184,12 @@ for i in $jails; do
 	
 	# show which jail are we handling
 	_echo_short "${color_highlight}Jailcontrol: $i ($operation)${color_default}"
+	
+	# on start...
+	if [ "$operation" == "start" ]; then
+		network_start_for_jail $i
+		fstab_start_for_jail $i
+	fi
 
 	# chceck wether the jail directory exists
 	if [ ! -d "$dir" ]; then
@@ -100,6 +215,12 @@ for i in $jails; do
 		for j in etc/rc$runlevel.d/S*; do
 			chroot . "/$j" $operation
 		done
+	fi
+	
+	# on stop...
+	if [ "$operation" == "stop" ]; then
+		fstab_stop_for_jail $i
+		network_stop_for_jail $i
 	fi
 	
 	_echo_short ""

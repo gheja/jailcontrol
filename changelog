@@ -1,3 +1,8 @@
+2012-xx-xx v0.2
+    * Added support of /etc/fstab rules for jails
+    * Added support of /etc/networking/interfaces rules for jails
+    * Replaced old symlinking with proper update-rc.d commands
+
 2010-xx-xx v0.1.1
 
 2009-xx-xx v0.1
