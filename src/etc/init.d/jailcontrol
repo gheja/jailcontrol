@@ -10,7 +10,7 @@
 # Short-Description: Starts/stops jails
 ### END INIT INFO
 
-version="0.2.3-testing"
+version="0.2.3"
 
 _echo()
 {
