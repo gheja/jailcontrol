@@ -10,7 +10,7 @@
 # Short-Description: Starts/stops jails
 ### END INIT INFO
 
-version="0.2.3"
+version="0.2.4"
 
 _echo()
 {
@@ -169,8 +169,6 @@ fi
 # parse parameters
 operation="$1"
 
-runlevel=`runlevel | awk '{ print $2; }'`
-
 if [ "$2" != "" ]; then
 	shift
 	jails="$@"
@@ -185,6 +183,17 @@ fi
 if [ $? != 0 ]; then
 	_echo "${color_error}Error: no jails defined!${color_default}"
 	exit 3
+fi
+
+runlevel=`runlevel | awk '{ print $2; }'`
+
+# the runlevel is not defined during boot/shutdown if systemd is active
+if [ "$runlevel" == "" ]; then
+	if [ "$operation" == "stop" ]; then
+		runlevel="0"
+	else
+		runlevel="2"
+	fi
 fi
 
 # check if operation is "stop", if so reverse the order of jails
