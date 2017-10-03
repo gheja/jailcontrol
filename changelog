@@ -1,3 +1,10 @@
+2017-10-03 v0.2.5
+    * Introduced config values:
+      * dont_run_on_new_vm=0
+
+2017-07-05 v0.2.4
+    * Added fallback runlevels if it can't be determined (on "stop": 0, on "start": 2)
+
 2013-12-13 v0.2.3
     * Added notification of jail tagging
 
