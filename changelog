@@ -1,4 +1,5 @@
 2017-10-03 v0.2.5
+    * Added option to disable execution on a new VM
     * Introduced config values:
       * dont_run_on_new_vm=0
 
