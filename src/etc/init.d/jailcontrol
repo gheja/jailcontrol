@@ -166,6 +166,14 @@ if [ `whoami` != "root" ]; then
 	exit 1
 fi
 
+if [ "$dont_run_on_new_vm" == 1 ]; then
+	echo "$HOSTNAME" | grep -Eq '^(vm|ip)[-0-9]+(\.|$)'
+	if [ $? == 0 ]; then
+		_echo "${color_normal}Notice: hostname matches new VM regexp and \"dont_run_on_new_vm\" is set, exiting.${color_default}"
+		exit 0
+	fi
+fi
+
 # parse parameters
 operation="$1"
 

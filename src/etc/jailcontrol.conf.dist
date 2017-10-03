@@ -69,3 +69,13 @@ jail_tagging_mode=0600
 ## For more info see "jail_tagging_enabled".
 ##
 jail_tagging_uid_gid=0:0
+
+##
+## dont_run_on_new_vm: If the host is freshly created then don't start the
+## jails.
+##
+## Hostname is checked against: '^(vm|ip)[-0-9]+(\.|$)'
+##
+## Default value (if not definied this value will be used): 0
+##
+dont_run_on_new_vm=0
